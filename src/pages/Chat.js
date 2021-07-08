@@ -1,12 +1,58 @@
 import React,{useEffect,useState} from 'react';
 import { logout } from "../helpers/auth";
+import * as dateFns from "date-fns";
 import { auth, database } from "../services/firebase";
 import { getChats, sendChat } from "../helpers/database";
-import Divider from '@material-ui/core/Divider';
-import * as dateFns from "date-fns";
+import { Container,Box,Grid,List,ListItem,ListItemText,ListItemAvatar,Avatar,Typography,Button  } from '@material-ui/core';
+
+import { makeStyles } from '@material-ui/core/styles';
+
+/* icon */
+// import ImageIcon from '@material-ui/icons/Image';
+// import WorkIcon from '@material-ui/icons/Work';
+// import BeachAccessIcon from '@material-ui/icons/BeachAccess';
+
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+    flexDirection: 'column',
+    backgroundColor: theme.palette.background.paper,
+  },
+  lBox: {
+    flexDirection: 'row-reverse',
+    display: 'flex',
+    textAlign: 'right'
+  },
+  rBox: {
+    flexDirection: 'row-reverse',
+    display: 'flex',
+    textAlign: 'right'
+  },
+    appBar: {
+      top: 'auto',
+      bottom: 0,
+      left: 0,
+      width:'100%',
+      '& input,& button': {
+        width: '100%',
+        height: '50px'
+      }
+  },
+}));
 
 const Chat = () => {
-    
+  const classes = useStyles();
+
+  const scrollToBottom = () =>{ 
+    window.scrollTo({ 
+      top: document.documentElement.scrollHeight, 
+      behavior: 'auto'
+      /* you can also use 'auto' behaviour 
+         in place of 'smooth' */
+    }); 
+  }; 
+
 const [msg, setMsg] = useState("");
 const [chats, setChats] = useState([]);
   
@@ -16,6 +62,7 @@ const handleOnChange = (e) => {
 
 const handleSumbit = async (e) => {
   e.preventDefault();
+  setMsg('');
   try{
     await sendChat({
       message: msg,
@@ -23,6 +70,7 @@ const handleSumbit = async (e) => {
       uid: auth().currentUser.uid,
       name: auth().currentUser.displayName === null ? auth().currentUser.email : auth().currentUser.displayName
     });
+    scrollToBottom();
   }catch(error){
     console.log(error);
   }
@@ -44,39 +92,74 @@ const getChatList = () => {
     }
   }, []);
 
-    return (
-      <div className="chat-container">
-            <div className="chat-top">헤더</div>
+  return (
+    <Container maxWidth="sm" style={{paddingBottom: '60px'}}>
+      
+      
+      <div className="chat-top">헤더</div>
+        <button onClick={() => { logout()}}>로그아웃</button>
         <div className="chat-middle">
-          
+          <List className={classes.root}>
           {chats.length > 0 ? (
                 chats.map((data, index) => (
-                      <li className="chat-bubble send" key={index} style={{ display:'flex',flexDirection:'column',alignItems:auth().currentUser.uid === data.uid ? 'flex-start' : 'flex-end'  }}>
-                      <p>{data.name}</p>
-                        <p>
-                          {data.message}
-                        </p>
-                    <span>{dateFns.format(data.timestamp, "yyyy-MM-dd-HH-mm-ss")}</span>
-                    <Divider style={{ width:'100%',border: '1px solid #000' }} />
-                  </li>
+                  <ListItem key={index} alignItems="flex-start" style={{ display: 'block' }}>
+                    <Box style={{
+                       display: 'flex',
+                      flexDirection: auth().currentUser.uid === data.uid ? 'row' : 'row-reverse',
+                          textAlign: auth().currentUser.uid === data.uid ? 'left' : 'right'
+                    }}>
+                      <ListItemAvatar style={{
+                            display: 'flex',
+                            justifyContent : auth().currentUser.uid !== data.uid ? 'flex-end' : 'flex-start',
+                       }}>
+                        <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                        </ListItemAvatar>
+                      <ListItemText
+                        primary={data.name}
+                        secondary={
+                          <React.Fragment>
+                            <Typography
+                              component="span"
+                              variant="body2"
+                              className={classes.inline}
+                              color="textPrimary"
+                            >
+                              {data.message}
+                            </Typography>
+                            <br />
+                            {dateFns.format(data.timestamp, "yyyy-MM-dd-HH-mm-ss")}
+                          </React.Fragment>
+                        }
+                      />
+                    </Box>
+                  </ListItem>                  
                 ))
               ) : (
                 <li>리스트가없습니다.</li>
               )}
-
-            </div>
-            <div className="chat-bottom">
-              <form onSubmit={handleSumbit}>
+            </List>
+      </div>
+      
+      <Box position="fixed" color="primary" className={classes.appBar}>
+        <Container maxWidth="sm">
+          <form onSubmit={handleSumbit}>
+            <Grid container spacing={1}>
+              <Grid container item xs={10} spacing={0}>
                 <input
                   placeholder="내용을 입력하세요."
                   value={msg}
                   onChange={handleOnChange}
                 />
-                <button type="submit">전송</button>
-              </form>
-              </div>
-            <button onClick={() => { logout()}}>로그아웃</button>
-          </div>
+              </Grid>
+              <Grid container item xs={2} spacing={0}>
+                <Button variant="contained" color="primary" type="submit">전송</Button>
+              </Grid>
+            </Grid>
+          </form>
+        </Container>
+      </Box>
+
+    </Container>
     );
 };
 
