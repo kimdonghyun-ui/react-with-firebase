@@ -1,11 +1,13 @@
 import React,{useEffect,useState} from 'react';
-import { logout } from "../helpers/auth";
+
 import * as dateFns from "date-fns";
 import { auth, database } from "../services/firebase";
 import { getChats, sendChat } from "../helpers/database";
 import { Container,Box,Grid,List,ListItem,ListItemText,ListItemAvatar,Avatar,Typography,Button  } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
+
+import Header from '../components/Header';
 
 /* icon */
 // import ImageIcon from '@material-ui/icons/Image';
@@ -97,26 +99,23 @@ const getChatList = () => {
 
   return (
     <Container maxWidth="sm" style={{paddingBottom: '60px'}}>
-      
-      
-      <div className="chat-top">헤더</div>
-        <button onClick={() => { logout()}}>로그아웃</button>
+        <Header />
         <div className="chat-middle">
           <List className={classes.root}>
-          {chats.length > 0 ? (
-                chats.map((data, index) => (
-                  <ListItem key={index} alignItems="flex-start" style={{ display: 'block' }}>
-                    <Box style={{
-                       display: 'flex',
-                      flexDirection: auth().currentUser.uid === data.uid ? 'row' : 'row-reverse',
-                          textAlign: auth().currentUser.uid === data.uid ? 'left' : 'right'
+            {chats.length > 0 ? (
+              chats.map((data, index) => (
+                <ListItem key={index} alignItems="flex-start" style={{ display: 'block' }}>
+                  <Box style={{
+                      display: 'flex',
+                    flexDirection: auth().currentUser.uid === data.uid ? 'row' : 'row-reverse',
+                        textAlign: auth().currentUser.uid === data.uid ? 'left' : 'right'
                     }}>
-                      <ListItemAvatar style={{
-                            display: 'flex',
-                            justifyContent : auth().currentUser.uid !== data.uid ? 'flex-end' : 'flex-start',
-                       }}>
-                        <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                        </ListItemAvatar>
+                    <ListItemAvatar style={{
+                          display: 'flex',
+                          justifyContent : auth().currentUser.uid !== data.uid ? 'flex-end' : 'flex-start',
+                      }}>
+                      <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                      </ListItemAvatar>
                       <ListItemText
                         primary={data.name}
                         secondary={
@@ -134,13 +133,13 @@ const getChatList = () => {
                           </React.Fragment>
                         }
                       />
-                    </Box>
-                  </ListItem>                  
-                ))
+                  </Box>
+                </ListItem>                  
+              ))
               ) : (
                 <li>리스트가없습니다.</li>
               )}
-            </List>
+          </List>
       </div>
       
       <Box position="fixed" color="primary" className={classes.appBar}>
