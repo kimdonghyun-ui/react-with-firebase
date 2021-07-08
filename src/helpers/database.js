@@ -2,10 +2,12 @@ import { database } from "../services/firebase";
 
 
 export function sendChat(data) {
+  console.log(data)
   return database.ref("chats").push({
     message: data.message,
     timestamp: data.timestamp,
     uid: data.uid,
+    name: data.name
   });
 }
 

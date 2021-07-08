@@ -2,6 +2,8 @@ import React,{useEffect,useState} from 'react';
 import { logout } from "../helpers/auth";
 import { auth, database } from "../services/firebase";
 import { getChats, sendChat } from "../helpers/database";
+import Divider from '@material-ui/core/Divider';
+import * as dateFns from "date-fns";
 
 const Chat = () => {
     
@@ -14,12 +16,12 @@ const handleOnChange = (e) => {
 
 const handleSumbit = async (e) => {
   e.preventDefault();
-  console.log(msg);
   try{
     await sendChat({
       message: msg,
       timestamp: Date.now(),
       uid: auth().currentUser.uid,
+      name: auth().currentUser.displayName === null ? auth().currentUser.email : auth().currentUser.displayName
     });
   }catch(error){
     console.log(error);
@@ -32,6 +34,7 @@ const getChatList = () => {
 };
 
   useEffect(() => {
+    
     try {
       database.ref("chats").on("child_added", getChatList);
       database.ref("chats").on("child_changed", getChatList);
@@ -40,37 +43,27 @@ const getChatList = () => {
       console.log(error);
     }
   }, []);
-  
+
     return (
       <div className="chat-container">
             <div className="chat-top">헤더</div>
         <div className="chat-middle">
           
-  {chats.length > 0 ? (
-        chats.map((data, index) => (
-              <li className="chat-bubble send" key={index} style={{ display:'flex',flexDirection:'column',alignItems:auth().currentUser.uid === data.uid ? 'flex-start' : 'flex-end'  }}>
-                <p>
-                  {data.message}
-                </p>
-            <span>{data.timestamp}</span>
-              </li>
-        ))
-      ) : (
-        <li>리스트가없습니다.</li>
-      )}
-{/* 
-              <li className="chat-bubble send">
-                <p>
-                  하이룽~하이룽~하이룽~하이룽~하이룽~하이룽~하이룽~하이룽~하이룽~하이룽~하이룽~하이룽~
-                  하이룽~하이룽~하이룽~하이룽~하이룽~하이룽~하이룽~하이룽~하이룽~
-                  하이룽~하이룽~하이룽~하이룽~하이룽~하이룽~하이룽~하이룽~
-                </p>
-                <span>13:30PM</span>
-              </li>
-              <li className="chat-bubble receive">
-                <p>방가방가!!</p>
-                <span>13:31PM</span>
-              </li> */}
+          {chats.length > 0 ? (
+                chats.map((data, index) => (
+                      <li className="chat-bubble send" key={index} style={{ display:'flex',flexDirection:'column',alignItems:auth().currentUser.uid === data.uid ? 'flex-start' : 'flex-end'  }}>
+                      <p>{data.name}</p>
+                        <p>
+                          {data.message}
+                        </p>
+                    <span>{dateFns.format(data.timestamp, "yyyy-MM-dd-HH-mm-ss")}</span>
+                    <Divider style={{ width:'100%',border: '1px solid #000' }} />
+                  </li>
+                ))
+              ) : (
+                <li>리스트가없습니다.</li>
+              )}
+
             </div>
             <div className="chat-bottom">
               <form onSubmit={handleSumbit}>
