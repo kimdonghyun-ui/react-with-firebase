@@ -39,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
         height: '50px'
       }
   },
+  inline: {
+    wordBreak: 'break-all',
+  }
 }));
 
 const Chat = () => {
