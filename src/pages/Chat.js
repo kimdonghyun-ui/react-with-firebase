@@ -2,7 +2,7 @@ import React,{useEffect,useState} from 'react';
 
 import * as dateFns from "date-fns";
 import { auth, database } from "../services/firebase";
-import { getChats, sendChat } from "../helpers/database";
+import { sendChat, removeChats } from "../helpers/database";
 import { Container,Box,Grid,List,ListItem,ListItemText,ListItemAvatar,Avatar,Typography,Button  } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -81,21 +81,26 @@ const handleSumbit = async (e) => {
   }
 };  
 
-const getChatList = () => {
-  const chatList = getChats();
-  setChats(chatList);
+const DataRead = () => {
+  database.ref("chats").on("value", (snapshot) => {
+    let response = snapshot.val();
+    if (response !== null) {
+      Object.keys(response).filter((key) => response[key]['key'] = key);
+      setChats(Object.values(response));
+    }
+    console.log(response);
+    scrollToBottom();
+  });
 };
 
   useEffect(() => {
+    DataRead()
     
-    try {
-      database.ref("chats").on("child_added", getChatList);
-      database.ref("chats").on("child_changed", getChatList);
-      //scrollToBottom();
-    } catch (error) {
-      console.log(error);
-    }
+      //return () => database().ref('chats').off('value', response);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+
 
   return (
     <Container maxWidth="sm" style={{paddingBottom: '60px'}}>
@@ -132,7 +137,8 @@ const getChatList = () => {
                             {dateFns.format(data.timestamp, "yyyy-MM-dd-HH-mm-ss")}
                           </React.Fragment>
                         }
-                      />
+                    />
+                    <Button onClick={()=>removeChats(data.key)}>삭제</Button>
                   </Box>
                 </ListItem>                  
               ))

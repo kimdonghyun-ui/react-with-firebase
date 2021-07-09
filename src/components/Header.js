@@ -3,7 +3,7 @@ import { logout } from "../helpers/auth";
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
+// import Typography from '@material-ui/core/Typography';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 // import Box from '@material-ui/core/Box';
@@ -41,7 +41,7 @@ export default function Header(props) {
             <HideOnScroll {...props}>
                 <AppBar>
                 <Toolbar>
-                            <Typography variant="h6">동동님의 채팅방세상</Typography>
+                            {/* <Typography variant="h6">동동님의 채팅방세상</Typography> */}
                             <button onClick={() => { logout()}}>로그아웃</button>
                 </Toolbar>
                 </AppBar>
