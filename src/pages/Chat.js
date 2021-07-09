@@ -1,5 +1,7 @@
 import React,{useEffect,useState} from 'react';
 
+
+
 import * as dateFns from "date-fns";
 import { auth, database } from "../services/firebase";
 import { sendChat, removeChats } from "../helpers/database";
@@ -8,6 +10,11 @@ import { Container,Box,Grid,List,ListItem,ListItemText,ListItemAvatar,Avatar,Typ
 import { makeStyles } from '@material-ui/core/styles';
 
 import Header from '../components/Header';
+
+import marked from 'marked';
+import DOMPurify from 'dompurify';
+
+const linkRenderer = new marked.Renderer();
 
 /* icon */
 // import ImageIcon from '@material-ui/icons/Image';
@@ -45,6 +52,24 @@ const useStyles = makeStyles((theme) => ({
     wordBreak: 'break-all',
   }
 }));
+
+
+const Marked = (props) => (
+  <>
+    <span
+      dangerouslySetInnerHTML={{
+        __html: DOMPurify.sanitize(
+          marked.parse(props.desc, { renderer: linkRenderer }),
+          {
+            ALLOWED_TAGS: ['h1','h2','h3','h4','h5','strong','a'],
+            ALLOWED_ATTR: ['href', 'target', 'title'],
+          }
+        ),
+      }}
+    />
+  </>
+);
+
 
 const Chat = () => {
   const classes = useStyles();
@@ -88,7 +113,7 @@ const DataRead = () => {
       Object.keys(response).filter((key) => response[key]['key'] = key);
       setChats(Object.values(response));
     }
-    console.log(response);
+    //console.log(response);
     scrollToBottom();
   });
 };
@@ -131,7 +156,8 @@ const DataRead = () => {
                               className={classes.inline}
                               color="textPrimary"
                             >
-                              {data.message}
+                              {/* {data.message} */}
+                              <Marked desc={data.message}></Marked>
                             </Typography>
                             <br />
                             {dateFns.format(data.timestamp, "yyyy-MM-dd-HH-mm-ss")}
