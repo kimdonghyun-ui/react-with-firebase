@@ -1,7 +1,7 @@
 import { auth } from "../services/firebase";
 
 export function signUp(email, password) {
-    console.log('가입',email,password)
+  console.log("가입", email, password);
   return auth().createUserWithEmailAndPassword(email, password);
 }
 

@@ -7,13 +7,23 @@ export function sendChat(data,room) {
     message: data.message,
     timestamp: data.timestamp,
     uid: data.uid,
-    name: data.name
+    name: data.name,
+  });
+}
+
+export function signUp2(email, name, password, uid) {
+  console.log("가입2", email, name, password);
+  return database.ref("users").push({
+    email: email,
+    name: name,
+    password: password,
+    uid: uid,
   });
 }
 
 export const removeChats = (key) => {
   database.ref(`chats/${key}`).remove();
-}
+};
 
 
 export function setRead(){
