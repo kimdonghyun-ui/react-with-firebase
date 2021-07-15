@@ -47,6 +47,11 @@ function App() {
   return (
     <Router>
       <Switch>
+        {/* <PrivateRoute
+          path="/friend"
+          authenticated={authenticated}
+          component={Friend}
+        /> */}
         <PrivateRoute
           path="/chat"
           authenticated={authenticated}

@@ -4,15 +4,25 @@ import React,{useEffect,useState} from 'react';
 
 import * as dateFns from "date-fns";
 import { auth, database } from "../services/firebase";
-import { sendChat, removeChats } from "../helpers/database";
+import { sendChat, removeChats, dataRead3 } from "../helpers/database";
 import { Container,Box,Grid,List,ListItem,ListItemText,ListItemAvatar,Avatar,Typography,Button  } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import Header from '../components/Header';
+// import Header from '../components/Header';
 
 import marked from 'marked';
 import DOMPurify from 'dompurify';
+
+import Layout from '../components/Layout';
+
+
+
+import { connect } from 'react-redux';
+import { setdata } from '../modules/chats';
+
+
+
 
 const linkRenderer = new marked.Renderer();
 
@@ -71,7 +81,7 @@ const Marked = (props) => (
 );
 
 
-const Chat = () => {
+const Chat = ({ setdata, chatdata }) => {
   const classes = useStyles();
 
   const scrollToBottom = () =>{ 
@@ -84,10 +94,10 @@ const Chat = () => {
   }; 
 
 const [msg, setMsg] = useState("");
-const [chats, setChats] = useState([]);
+  const [chats, setChats] = useState([]);
   
-const handleOnChange = (e) => {
-	setMsg(e.target.value);
+  const handleOnChange = (e) => {
+	  setMsg(e.target.value);
   };
 
 const handleSumbit = async (e) => {
@@ -99,28 +109,61 @@ const handleSumbit = async (e) => {
       timestamp: Date.now(),
       uid: auth().currentUser.uid,
       name: auth().currentUser.displayName === null ? auth().currentUser.email : auth().currentUser.displayName
-    });
+    },'gogogo');
     scrollToBottom();
   }catch(error){
     console.log(error);
   }
 };  
 
-const DataRead = () => {
-  database.ref("chats").on("value", (snapshot) => {
+// const DataRead = (room) => {
+//   database.ref(room).on("value", (snapshot) => {
+//     let response = snapshot.val();
+//     if (response !== null) {
+//       Object.keys(response).filter((key) => response[key]['key'] = key);
+//       setChats(Object.values(response));
+//     }
+//     //console.log(response);
+//     scrollToBottom();
+//   });
+// };
+
+const DataRead2 = (room) => {
+  database.ref(room).on("value", (snapshot) => {
     let response = snapshot.val();
     if (response !== null) {
       Object.keys(response).filter((key) => response[key]['key'] = key);
       setChats(Object.values(response));
+      setdata(Object.values(response));
+      console.log('a',response);
     }
     //console.log(response);
-    scrollToBottom();
+    
   });
 };
 
-  useEffect(() => {
-    DataRead()
+
+const DataRead3 = (room) => {
+  database.ref(room).on("value", (snapshot) => {
+    let response = snapshot.val();
+    if (response !== null) {
+      Object.keys(response).filter((key) => response[key]['key'] = key);
+      // setChats(Object.values(response));
+      setdata(Object.values(response));
+      // console.log('a', Object.values(response));
+    }
     
+  });
+};
+
+  
+  useEffect(() => {
+    // DataRead('gogogo')
+    // DataRead2('gogogo')
+    // dataRead3('gogogo')
+    DataRead3('gogogo');
+    console.log(chatdata)
+    // DataRead2()
       //return () => database().ref('chats').off('value', response);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -128,8 +171,9 @@ const DataRead = () => {
 
 
   return (
+    <Layout>
     <Container maxWidth="sm" style={{paddingBottom: '60px'}}>
-        <Header />
+        {/* <Header /> */}
         <div className="chat-middle">
           <List className={classes.root}>
             {chats.length > 0 ? (
@@ -193,8 +237,23 @@ const DataRead = () => {
         </Container>
       </Box>
 
-    </Container>
+      </Container>
+      </Layout>
     );
 };
 
-export default Chat;
+
+const mapStateToProps = (state) => ({
+  chatdata: state.chats.chatdata,
+});
+const mapDispatchToProps = (dispatch) => ({
+  setdata: (val) => {
+    dispatch(setdata(val));
+  },
+  // remove: (val) => {
+  //   dispatch(remove(val));
+  // },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);
+
