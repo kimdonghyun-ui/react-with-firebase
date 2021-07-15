@@ -4,7 +4,7 @@ import React,{useEffect,useState} from 'react';
 
 import * as dateFns from "date-fns";
 import { auth, database } from "../services/firebase";
-import { sendChat, removeChats, dataRead3 } from "../helpers/database";
+import { sendChat, removeChats } from "../helpers/database";
 import { Container,Box,Grid,List,ListItem,ListItemText,ListItemAvatar,Avatar,Typography,Button  } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -128,19 +128,19 @@ const handleSumbit = async (e) => {
 //   });
 // };
 
-const DataRead2 = (room) => {
-  database.ref(room).on("value", (snapshot) => {
-    let response = snapshot.val();
-    if (response !== null) {
-      Object.keys(response).filter((key) => response[key]['key'] = key);
-      setChats(Object.values(response));
-      setdata(Object.values(response));
-      console.log('a',response);
-    }
-    //console.log(response);
+// const DataRead2 = (room) => {
+//   database.ref(room).on("value", (snapshot) => {
+//     let response = snapshot.val();
+//     if (response !== null) {
+//       Object.keys(response).filter((key) => response[key]['key'] = key);
+//       setChats(Object.values(response));
+//       setdata(Object.values(response));
+//       console.log('a',response);
+//     }
+//     //console.log(response);
     
-  });
-};
+//   });
+// };
 
 
 const DataRead3 = (room) => {
