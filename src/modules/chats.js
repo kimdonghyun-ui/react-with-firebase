@@ -1,12 +1,12 @@
-const SETROOM = 'menu/SETROOM';
+const SETROOMREDUX = 'menu/SETROOMREDUX';
 const SETDATA = 'menu/SETDATA';
 const SETALLMENU = 'menu/SETALLMENU';
 // const SETDATA = 'menu/SETDATA';
 const REMOVE = 'menu/REMOVE';
 
 
-export const setroom = (new_room) => ({
-  type: SETROOM,
+export const setroomredux = (new_room) => ({
+  type: SETROOMREDUX,
   new_room,
 });
 
@@ -40,7 +40,7 @@ const initialState = {
 function chats(state = initialState, action) {
   switch (action.type) {
 
-    case SETROOM:
+    case SETROOMREDUX:
       return {
         ...state,
         roomnumber : action.new_room

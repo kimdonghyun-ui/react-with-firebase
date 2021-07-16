@@ -3,7 +3,7 @@ import { database } from "../services/firebase";
 
 export function sendChat(data,room) {
   // console.log(data)
-  return database.ref(room).push({
+  return database.ref(`list/${room}`).push({
     message: data.message,
     timestamp: data.timestamp,
     uid: data.uid,
@@ -22,7 +22,7 @@ export function signUp2(email, name, password, uid) {
 }
 
 export const removeChats = (room,key) => {
-  database.ref(`${room}/${key}`).remove();
+  database.ref(`list/${room}/${key}`).remove();
 };
 
 
@@ -31,7 +31,7 @@ export const removeChats = (room,key) => {
 
 export const setRead = (room, setRedux,setstate) => {
   let list = [];
-  database.ref(room).on("value", (snapshot) => {
+  database.ref(`list/${room}`).on("value", (snapshot) => {
     let response = snapshot.val();
     if (response !== null) {
       Object.keys(response).filter((key) => response[key]['key'] = key);
@@ -40,6 +40,16 @@ export const setRead = (room, setRedux,setstate) => {
     }
     setRedux(list);
     // setstate(list);
+  });
+};
+
+
+export const setRoom = (you, setroomredux) => {
+    database.ref('list/').on("value", (snapshot) => {
+      let response = Object.keys(snapshot.val());
+      console.log('체크1', response)
+
+      setroomredux(you);
   });
 };
 

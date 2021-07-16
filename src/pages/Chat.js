@@ -116,11 +116,12 @@ const handleSumbit = async (e) => {
   }
 };  
 
-
+  
+  
   useEffect(() => {
     setRead(roomnumber, setdata);
   //return () => database().ref('chats').off('value', response);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, []);
 
 
@@ -163,7 +164,7 @@ const handleSumbit = async (e) => {
                           </React.Fragment>
                         }
                     />
-                    <Button onClick={()=>removeChats(roomnumber,data.key)}>삭제</Button>
+                    <Button style={{ display: auth().currentUser.uid !== data.uid ? 'none' : 'inline-flex' }} onClick={()=>removeChats(roomnumber,data.key)}>삭제</Button>
                   </Box>
                 </ListItem>                  
               ))

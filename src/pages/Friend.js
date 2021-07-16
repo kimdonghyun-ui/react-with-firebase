@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { auth,database } from "../services/firebase";
+import { database } from "../services/firebase";
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -11,9 +11,9 @@ import Avatar from '@material-ui/core/Avatar';
 // import WorkIcon from '@material-ui/icons/Work';
 import BeachAccessIcon from '@material-ui/icons/BeachAccess';
 
-import { setRead } from "../helpers/database";
+import { setRead, setRoom } from "../helpers/database";
 import { connect } from 'react-redux';
-import { setdata,setroom } from '../modules/chats';
+import { setdata,setroomredux } from '../modules/chats';
 
 
 
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const Friend = ({ setdata,setroom }) => {
+const Friend = ({ setdata,setroomredux }) => {
     const classes = useStyles();
     const [users, setUsers] = useState([]);
     
@@ -57,16 +57,17 @@ const DataRead = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-    const handleOnChat = (me, you) => {
-        setroom(`${me}+${you}`);
-	    setRead(`${me}+${you}`, setdata);
+    const handleOnChat = (you) => {
+        setRoom(you,setroomredux)
+        // setroomredux(`${me}+${you}`);
+	    setRead(you, setdata);
   };
     
     return (
         <List className={classes.root}>
             {users.length > 0 ? (
               users.map((data, index) => (
-                <ListItem key={index} button onClick={()=>handleOnChat(auth().currentUser.uid , data.uid)}>
+                <ListItem key={index} button onClick={()=>handleOnChat(data.uid)}>
                     <ListItemAvatar>
                     <Avatar>
                         <BeachAccessIcon />
@@ -88,8 +89,8 @@ const mapDispatchToProps = (dispatch) => ({
   setdata: (val) => {
     dispatch(setdata(val));
     },
-  setroom: (val) => {
-    dispatch(setroom(val));
+  setroomredux: (val) => {
+    dispatch(setroomredux(val));
   },
 });
 
