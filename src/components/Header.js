@@ -1,23 +1,21 @@
-import React from 'react';
+import React from "react";
 import { logout } from "../helpers/auth";
-import PropTypes from 'prop-types';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import useScrollTrigger from '@material-ui/core/useScrollTrigger';
+import PropTypes from "prop-types";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import useScrollTrigger from "@material-ui/core/useScrollTrigger";
 // import Box from '@material-ui/core/Box';
-import Container from '@material-ui/core/Container';
-import Slide from '@material-ui/core/Slide';
+import Container from "@material-ui/core/Container";
+import Slide from "@material-ui/core/Slide";
 
-// import { auth } from "../services/firebase";
+import { auth } from "../services/firebase";
 
-import { connect } from 'react-redux';
-
-
+import { connect } from "react-redux";
 
 function HideOnScroll(props) {
-  const { children, window  } = props;
+  const { children, window } = props;
   // Note that you normally won't need to set the window ref as useScrollTrigger
   // will default to window.
   // This is only being set here because the demo is in an iframe.
@@ -39,40 +37,43 @@ HideOnScroll.propTypes = {
   window: PropTypes.func,
 };
 
-
 const Header = (props) => {
-  const {   me } = props;
+  const { me } = props;
   // const [result, setResult] = useState([]);
 
   // const Hello = (a) => {
-    
+
   //   let gogo = a.filter(data => data.uid.includes(auth().currentUser.uid));
   //   console.log('gogo',gogo)
   //   setResult(gogo)
-    
+
   // }
 
-
-
-
   return (
-      <React.Fragment>
-          <Container maxWidth="sm">
-            <CssBaseline />
-            <HideOnScroll {...props}>
-                <AppBar>
-                <Toolbar>
-              <Typography variant="h6">{ me.name }님의 채팅방세상</Typography>
-                            <button onClick={() => { logout()}}>로그아웃</button>
-                </Toolbar>
-                </AppBar>
-            </HideOnScroll>
-            <Toolbar />
-      
+    <React.Fragment>
+      <Container maxWidth="sm">
+        <CssBaseline />
+        <HideOnScroll {...props}>
+          <AppBar>
+            <Toolbar>
+              <Typography variant="h6">
+                {me ? me.name : auth().currentUser.email}님의 채팅방세상
+              </Typography>
+              <button
+                onClick={() => {
+                  logout();
+                }}
+              >
+                로그아웃
+              </button>
+            </Toolbar>
+          </AppBar>
+        </HideOnScroll>
+        <Toolbar />
       </Container>
     </React.Fragment>
   );
-}
+};
 
 const mapStateToProps = (state) => ({
   me: state.chats.me,
