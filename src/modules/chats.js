@@ -1,8 +1,14 @@
+const SETROOM = 'menu/SETROOM';
 const SETDATA = 'menu/SETDATA';
 const SETALLMENU = 'menu/SETALLMENU';
 // const SETDATA = 'menu/SETDATA';
 const REMOVE = 'menu/REMOVE';
 
+
+export const setroom = (new_room) => ({
+  type: SETROOM,
+  new_room,
+});
 
 export const setdata = (new_list) => ({
   type: SETDATA,
@@ -25,6 +31,7 @@ export const remove = (id) => ({
 });
 
 const initialState = {
+  roomnumber:'0',
   chatdata:[],
   typemenu: [],
   allmenu: [],
@@ -32,6 +39,12 @@ const initialState = {
 
 function chats(state = initialState, action) {
   switch (action.type) {
+
+    case SETROOM:
+      return {
+        ...state,
+        roomnumber : action.new_room
+      };
 
     case SETDATA:
       return {

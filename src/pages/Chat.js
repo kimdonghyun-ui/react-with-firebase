@@ -3,8 +3,8 @@ import React,{useEffect,useState} from 'react';
 
 
 import * as dateFns from "date-fns";
-import { auth, database } from "../services/firebase";
-import { sendChat, removeChats } from "../helpers/database";
+import { auth } from "../services/firebase";
+import { sendChat, removeChats, setRead } from "../helpers/database";
 import { Container,Box,Grid,List,ListItem,ListItemText,ListItemAvatar,Avatar,Typography,Button  } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -81,7 +81,7 @@ const Marked = (props) => (
 );
 
 
-const Chat = ({ setdata, chatdata }) => {
+const Chat = ({ setdata, chatdata, roomnumber }) => {
   const classes = useStyles();
 
   const scrollToBottom = () =>{ 
@@ -94,10 +94,10 @@ const Chat = ({ setdata, chatdata }) => {
   }; 
 
 const [msg, setMsg] = useState("");
-  const [chats, setChats] = useState([]);
+  const [chats, setChats] = useState(chatdata);
   
   const handleOnChange = (e) => {
-	  setMsg(e.target.value);
+    setMsg(e.target.value);
   };
 
 const handleSumbit = async (e) => {
@@ -109,62 +109,17 @@ const handleSumbit = async (e) => {
       timestamp: Date.now(),
       uid: auth().currentUser.uid,
       name: auth().currentUser.displayName === null ? auth().currentUser.email : auth().currentUser.displayName
-    },'gogogo');
+    },roomnumber);
     scrollToBottom();
   }catch(error){
     console.log(error);
   }
 };  
 
-// const DataRead = (room) => {
-//   database.ref(room).on("value", (snapshot) => {
-//     let response = snapshot.val();
-//     if (response !== null) {
-//       Object.keys(response).filter((key) => response[key]['key'] = key);
-//       setChats(Object.values(response));
-//     }
-//     //console.log(response);
-//     scrollToBottom();
-//   });
-// };
 
-// const DataRead2 = (room) => {
-//   database.ref(room).on("value", (snapshot) => {
-//     let response = snapshot.val();
-//     if (response !== null) {
-//       Object.keys(response).filter((key) => response[key]['key'] = key);
-//       setChats(Object.values(response));
-//       setdata(Object.values(response));
-//       console.log('a',response);
-//     }
-//     //console.log(response);
-    
-//   });
-// };
-
-
-const DataRead3 = (room) => {
-  database.ref(room).on("value", (snapshot) => {
-    let response = snapshot.val();
-    if (response !== null) {
-      Object.keys(response).filter((key) => response[key]['key'] = key);
-      // setChats(Object.values(response));
-      setdata(Object.values(response));
-      // console.log('a', Object.values(response));
-    }
-    
-  });
-};
-
-  
   useEffect(() => {
-    // DataRead('gogogo')
-    // DataRead2('gogogo')
-    // dataRead3('gogogo')
-    DataRead3('gogogo');
-    console.log(chatdata)
-    // DataRead2()
-      //return () => database().ref('chats').off('value', response);
+    setRead(roomnumber, setdata);
+  //return () => database().ref('chats').off('value', response);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -176,8 +131,8 @@ const DataRead3 = (room) => {
         {/* <Header /> */}
         <div className="chat-middle">
           <List className={classes.root}>
-            {chats.length > 0 ? (
-              chats.map((data, index) => (
+            {chatdata.length > 0 ? (
+              chatdata.map((data, index) => (
                 <ListItem key={index} alignItems="flex-start" style={{ display: 'block' }}>
                   <Box style={{
                       display: 'flex',
@@ -208,7 +163,7 @@ const DataRead3 = (room) => {
                           </React.Fragment>
                         }
                     />
-                    <Button onClick={()=>removeChats(data.key)}>삭제</Button>
+                    <Button onClick={()=>removeChats(roomnumber,data.key)}>삭제</Button>
                   </Box>
                 </ListItem>                  
               ))
@@ -244,6 +199,7 @@ const DataRead3 = (room) => {
 
 
 const mapStateToProps = (state) => ({
+  roomnumber: state.chats.roomnumber,
   chatdata: state.chats.chatdata,
 });
 const mapDispatchToProps = (dispatch) => ({

@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { database } from "../services/firebase";
+import { auth,database } from "../services/firebase";
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import ImageIcon from '@material-ui/icons/Image';
-import WorkIcon from '@material-ui/icons/Work';
+// import ImageIcon from '@material-ui/icons/Image';
+// import WorkIcon from '@material-ui/icons/Work';
 import BeachAccessIcon from '@material-ui/icons/BeachAccess';
 
-
+import { setRead } from "../helpers/database";
+import { connect } from 'react-redux';
+import { setdata,setroom } from '../modules/chats';
 
 
 
@@ -27,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const Friend = () => {
+const Friend = ({ setdata,setroom }) => {
     const classes = useStyles();
     const [users, setUsers] = useState([]);
     
@@ -55,15 +57,16 @@ const DataRead = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-const handleOnChat = (e) => {
-	alert('a')
+    const handleOnChat = (me, you) => {
+        setroom(`${me}+${you}`);
+	    setRead(`${me}+${you}`, setdata);
   };
     
     return (
         <List className={classes.root}>
             {users.length > 0 ? (
               users.map((data, index) => (
-                <ListItem key={index} button onClick={()=>handleOnChat()}>
+                <ListItem key={index} button onClick={()=>handleOnChat(auth().currentUser.uid , data.uid)}>
                     <ListItemAvatar>
                     <Avatar>
                         <BeachAccessIcon />
@@ -79,4 +82,15 @@ const handleOnChat = (e) => {
     );
 };
 
-export default Friend;
+
+
+const mapDispatchToProps = (dispatch) => ({
+  setdata: (val) => {
+    dispatch(setdata(val));
+    },
+  setroom: (val) => {
+    dispatch(setroom(val));
+  },
+});
+
+export default connect(null, mapDispatchToProps)(Friend);

@@ -21,22 +21,30 @@ export function signUp2(email, name, password, uid) {
   });
 }
 
-export const removeChats = (key) => {
-  database.ref(`chats/${key}`).remove();
+export const removeChats = (room,key) => {
+  database.ref(`${room}/${key}`).remove();
 };
 
 
-export function setRead(){
-  // database.ref("chats").on("value", (snapshot) => {
-  //   let response = snapshot.val();
-  //   if (response !== null) {
-  //     Object.keys(response).filter((key) => response[key]['key'] = key);
-  //     setChats(Object.values(response));
-  //   }
-  //   //console.log(response);
-  //   scrollToBottom();
-  // });
+
+
+
+export const setRead = (room, setRedux,setstate) => {
+  let list = [];
+  database.ref(room).on("value", (snapshot) => {
+    let response = snapshot.val();
+    if (response !== null) {
+      Object.keys(response).filter((key) => response[key]['key'] = key);
+      console.log('a', Object.values(response));
+      list = Object.values(response);
+    }
+    setRedux(list);
+    // setstate(list);
+  });
 };
+
+
+
 
 
 // export function getChats() {
