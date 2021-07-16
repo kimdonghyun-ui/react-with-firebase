@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { database } from "../services/firebase";
 
@@ -13,8 +13,8 @@ import BeachAccessIcon from '@material-ui/icons/BeachAccess';
 
 import { setRead, setRoom } from "../helpers/database";
 import { connect } from 'react-redux';
-import { setdata,setroomredux } from '../modules/chats';
-
+import { setdata,setroomredux,setusers, setme } from '../modules/chats';
+import { auth } from "../services/firebase";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -29,9 +29,9 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const Friend = ({ setdata,setroomredux }) => {
+const Friend = ({ setdata,setroomredux, setusers,userdata, setme }) => {
     const classes = useStyles();
-    const [users, setUsers] = useState([]);
+    // const [users, setUsers] = useState([]);
     
 
 const DataRead = () => {
@@ -39,7 +39,7 @@ const DataRead = () => {
       let response = snapshot.val();
       console.log(response)
       if (response !== null) {
-          setUsers(Object.values(response));
+          setusers(Object.values(response));
       }
     // if (response !== null) {
     //   Object.keys(response).filter((key) => response[key]['key'] = key);
@@ -50,13 +50,35 @@ const DataRead = () => {
   });
 };
 
+    
+    const fond = (a) => {
+        //console.log(a)
+        //console.log(auth().currentUser.uid)
+
+        const dfs = a.filter((data) => !data.uid.indexOf(auth().currentUser.uid));
+        console.log(dfs[0].name)
+        setme(dfs[0].name)
+    }
+    
+    //const ee = (userdata.length > 0 && fond(userdata));
+    //if (userdata.length) return ( ee )
+   
+console.log('userdata',userdata)
+
   useEffect(() => {
     DataRead()
-    
+
       //return () => database().ref('chats').off('value', response);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  },[]);
 
+    useEffect(() => {
+
+    userdata.length > 0 && fond(userdata)
+      //return () => database().ref('chats').off('value', response);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[userdata]);
+    
     const handleOnChat = (you) => {
         setRoom(you,setroomredux)
         // setroomredux(`${me}+${you}`);
@@ -65,8 +87,8 @@ const DataRead = () => {
     
     return (
         <List className={classes.root}>
-            {users.length > 0 ? (
-              users.map((data, index) => (
+            {userdata.length > 0 ? (
+              userdata.map((data, index) => (
                 <ListItem key={index} button onClick={()=>handleOnChat(data.uid)}>
                     <ListItemAvatar>
                     <Avatar>
@@ -83,15 +105,23 @@ const DataRead = () => {
     );
 };
 
-
+const mapStateToProps = (state) => ({
+  userdata: state.chats.userdata,
+});
 
 const mapDispatchToProps = (dispatch) => ({
-  setdata: (val) => {
-    dispatch(setdata(val));
+    setdata: (val) => {
+        dispatch(setdata(val));
     },
-  setroomredux: (val) => {
-    dispatch(setroomredux(val));
+    setroomredux: (val) => {
+        dispatch(setroomredux(val));
+    },
+    setusers: (val) => {
+        dispatch(setusers(val));
+    },
+  setme: (val) => {
+    dispatch(setme(val));
   },
 });
 
-export default connect(null, mapDispatchToProps)(Friend);
+export default connect(mapStateToProps, mapDispatchToProps)(Friend);

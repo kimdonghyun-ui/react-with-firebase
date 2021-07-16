@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{ useEffect, useState } from 'react';
 import { logout } from "../helpers/auth";
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
@@ -10,8 +10,14 @@ import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Container from '@material-ui/core/Container';
 import Slide from '@material-ui/core/Slide';
 
+import { auth } from "../services/firebase";
+
+import { connect } from 'react-redux';
+
+
+
 function HideOnScroll(props) {
-  const { children, window } = props;
+  const { children, window  } = props;
   // Note that you normally won't need to set the window ref as useScrollTrigger
   // will default to window.
   // This is only being set here because the demo is in an iframe.
@@ -33,7 +39,25 @@ HideOnScroll.propTypes = {
   window: PropTypes.func,
 };
 
-export default function Header(props) {
+
+const Header = (props) => {
+  const { userdata , me } = props;
+  const [result, setResult] = useState([]);
+
+  // const Hello = (a) => {
+    
+  //   let gogo = a.filter(data => data.uid.includes(auth().currentUser.uid));
+  //   console.log('gogo',gogo)
+  //   setResult(gogo)
+    
+  // }
+
+  useEffect(() => {
+  // setResult(Object.keys(userdata).filter(data => data.uid.includes(auth().currentUser.uid)));
+  console.log(me)
+  }, []);
+
+
   return (
       <React.Fragment>
           <Container maxWidth="sm">
@@ -41,7 +65,7 @@ export default function Header(props) {
             <HideOnScroll {...props}>
                 <AppBar>
                 <Toolbar>
-                            <Typography variant="h6">동동님의 채팅방세상</Typography>
+              <Typography variant="h6">{ me }님의 채팅방세상</Typography>
                             <button onClick={() => { logout()}}>로그아웃</button>
                 </Toolbar>
                 </AppBar>
@@ -52,3 +76,10 @@ export default function Header(props) {
     </React.Fragment>
   );
 }
+
+const mapStateToProps = (state) => ({
+  me: state.chats.me,
+  userdata: state.chats.userdata,
+});
+
+export default connect(mapStateToProps, null)(Header);
