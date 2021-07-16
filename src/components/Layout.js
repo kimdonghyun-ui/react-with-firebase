@@ -10,6 +10,7 @@ import Friend from '../pages/Friend';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    paddingTop: '64px'
   },
   paper: {
     padding: theme.spacing(2),

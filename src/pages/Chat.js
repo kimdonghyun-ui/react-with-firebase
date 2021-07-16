@@ -9,7 +9,7 @@ import { Container,Box,Grid,List,ListItem,ListItemText,ListItemAvatar,Avatar,Typ
 
 import { makeStyles } from '@material-ui/core/styles';
 
-// import Header from '../components/Header';
+import Header from '../components/Header';
 
 import marked from 'marked';
 import DOMPurify from 'dompurify';
@@ -94,7 +94,7 @@ const Chat = ({ setdata, chatdata, roomnumber }) => {
   }; 
 
 const [msg, setMsg] = useState("");
-  const [chats, setChats] = useState(chatdata);
+  // const [chats, setChats] = useState(chatdata);
   
   const handleOnChange = (e) => {
     setMsg(e.target.value);
@@ -128,7 +128,7 @@ const handleSumbit = async (e) => {
   return (
     <Layout>
     <Container maxWidth="sm" style={{paddingBottom: '60px'}}>
-        {/* <Header /> */}
+        <Header />
         <div className="chat-middle">
           <List className={classes.root}>
             {chatdata.length > 0 ? (
