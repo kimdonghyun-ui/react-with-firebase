@@ -1,4 +1,4 @@
-import React,{ useEffect, useState } from 'react';
+import React from 'react';
 import { logout } from "../helpers/auth";
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
@@ -10,7 +10,7 @@ import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Container from '@material-ui/core/Container';
 import Slide from '@material-ui/core/Slide';
 
-import { auth } from "../services/firebase";
+// import { auth } from "../services/firebase";
 
 import { connect } from 'react-redux';
 
@@ -41,8 +41,8 @@ HideOnScroll.propTypes = {
 
 
 const Header = (props) => {
-  const { userdata , me } = props;
-  const [result, setResult] = useState([]);
+  const {   me } = props;
+  // const [result, setResult] = useState([]);
 
   // const Hello = (a) => {
     
@@ -52,10 +52,7 @@ const Header = (props) => {
     
   // }
 
-  useEffect(() => {
-  // setResult(Object.keys(userdata).filter(data => data.uid.includes(auth().currentUser.uid)));
-  console.log(me)
-  }, []);
+
 
 
   return (
@@ -65,7 +62,7 @@ const Header = (props) => {
             <HideOnScroll {...props}>
                 <AppBar>
                 <Toolbar>
-              <Typography variant="h6">{ me }님의 채팅방세상</Typography>
+              <Typography variant="h6">{ me.name }님의 채팅방세상</Typography>
                             <button onClick={() => { logout()}}>로그아웃</button>
                 </Toolbar>
                 </AppBar>

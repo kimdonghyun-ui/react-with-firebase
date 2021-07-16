@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const Friend = ({ setdata,setroomredux, setusers,userdata, setme }) => {
+const Friend = ({ setdata,setroomredux, setusers,userdata, setme, roomnumber }) => {
     const classes = useStyles();
     // const [users, setUsers] = useState([]);
     
@@ -57,7 +57,7 @@ const DataRead = () => {
 
         const dfs = a.filter((data) => !data.uid.indexOf(auth().currentUser.uid));
         console.log(dfs[0].name)
-        setme(dfs[0].name)
+        setme(dfs[0])
     }
     
     //const ee = (userdata.length > 0 && fond(userdata));
@@ -89,13 +89,13 @@ console.log('userdata',userdata)
         <List className={classes.root}>
             {userdata.length > 0 ? (
               userdata.map((data, index) => (
-                <ListItem key={index} button onClick={()=>handleOnChat(data.uid)}>
+                  <ListItem key={index} button onClick={() => handleOnChat(data.uid)} style={{ border: data.uid === roomnumber ? '1px solid #000' : '0' }}>
                     <ListItemAvatar>
                     <Avatar>
                         <BeachAccessIcon />
                     </Avatar>
                     </ListItemAvatar>
-                    <ListItemText primary={ data.name } secondary={ data.email } />
+                      <ListItemText primary={data.name} secondary={data.email} />
                 </ListItem>  
               ))
             ) : (
@@ -106,7 +106,8 @@ console.log('userdata',userdata)
 };
 
 const mapStateToProps = (state) => ({
-  userdata: state.chats.userdata,
+    userdata: state.chats.userdata,
+    roomnumber: state.chats.roomnumber
 });
 
 const mapDispatchToProps = (dispatch) => ({
