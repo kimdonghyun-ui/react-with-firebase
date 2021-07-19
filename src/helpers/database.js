@@ -21,8 +21,10 @@ export function signUp2(email, name, password, uid) {
   });
 }
 
-export const removeChats = (room,key) => {
+export const removeChats = (room,key,removeredux) => {
   database.ref(`list/${room}/${key}`).remove();
+  removeredux(key);
+  console.log('메롱')
 };
 
 

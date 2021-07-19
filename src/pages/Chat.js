@@ -19,7 +19,7 @@ import Layout from '../components/Layout';
 
 
 import { connect } from 'react-redux';
-import { setdata } from '../modules/chats';
+import { setdata,removeredux } from '../modules/chats';
 
 
 
@@ -81,7 +81,7 @@ const Marked = (props) => (
 );
 
 
-const Chat = ({ setdata, chatdata, roomnumber }) => {
+const Chat = ({ setdata, chatdata, roomnumber, removeredux }) => {
   const classes = useStyles();
 
   const scrollToBottom = () =>{ 
@@ -164,7 +164,7 @@ const handleSumbit = async (e) => {
                           </React.Fragment>
                         }
                     />
-                    <Button style={{ display: auth().currentUser.uid !== data.uid ? 'none' : 'inline-flex' }} onClick={()=>removeChats(roomnumber,data.key)}>삭제</Button>
+                    <Button style={{ display: auth().currentUser.uid !== data.uid ? 'none' : 'inline-flex' }} onClick={()=>removeChats(roomnumber,data.key,removeredux)}>삭제</Button>
                   </Box>
                 </ListItem>                  
               ))
@@ -207,9 +207,9 @@ const mapDispatchToProps = (dispatch) => ({
   setdata: (val) => {
     dispatch(setdata(val));
   },
-  // remove: (val) => {
-  //   dispatch(remove(val));
-  // },
+  removeredux: (val) => {
+    dispatch(removeredux(val));
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Chat);

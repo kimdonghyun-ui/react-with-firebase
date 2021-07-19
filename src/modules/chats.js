@@ -4,7 +4,7 @@ const SETDATA = 'menu/SETDATA';
 const SETUSERS = 'menu/SETUSERS';
 const SETALLMENU = 'menu/SETALLMENU';
 // const SETDATA = 'menu/SETDATA';
-const REMOVE = 'menu/REMOVE';
+const REMOVEREDUX = 'menu/REMOVEREDUX';
 
 export const setme = (new_me) => ({
   type: SETME,
@@ -32,9 +32,9 @@ export const setusers = (new_user) => ({
 //   data,
 // });
 
-export const remove = (id) => ({
-  type: REMOVE,
-  id,
+export const removeredux = (key) => ({
+  type: REMOVEREDUX,
+  key,
 });
 
 const initialState = {
@@ -80,10 +80,10 @@ function chats(state = initialState, action) {
 
 
 
-    case REMOVE:
+    case REMOVEREDUX:
       return {
         ...state,
-        allmenu: state.allmenu.filter((todo) => todo.id !== action.id),
+        chatdata: state.chatdata.filter((todo) => todo.key !== action.key),
       };
 
     // case SETDATA:
